@@ -13,20 +13,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.app.Activity;
 import android.content.Context;
+import java.io.File;
+import android.util.Log;
 import android.database.Cursor;
-
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
 
-
-
+import static com.example.jeff.myapplication.DataBaseHelper.DATABASE_NAME;
 
 
 public class MainActivity extends AppCompatActivity {
     private String name_of_category;
     private String allocated_budget;
+    private boolean DBChecker;
     DataBaseHelper myDb;
 
     @Override
@@ -46,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
          myDb = new DataBaseHelper(this);
+         //DBChecker = doesDatabaseExist(this,  DATABASE_NAME);
+         //Log.v("Database exists: ", Boolean.toString(DBChecker));
+
     }
 
     @Override
@@ -79,6 +82,12 @@ public class MainActivity extends AppCompatActivity {
         dialog.show(getFragmentManager(), "example dialog");
 
     }
+
+    private static boolean doesDatabaseExist(Context context, String dbName) {
+        File dbFile = context.getDatabasePath(dbName);
+        return dbFile.exists();
+    }
+
 
 
 
