@@ -23,7 +23,7 @@ import android.database.sqlite.SQLiteDatabase;
 import static com.example.jeff.myapplication.DataBaseHelper.DATABASE_NAME;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ExpenseDialog.dialogListener {
     private String name_of_category;
     private String allocated_budget;
     private boolean DBChecker;
@@ -72,15 +72,23 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    public void gotoAct1(View V) {
-        Intent intent = new Intent(this, NewExpense.class);
-        startActivity(intent);
-    }
 
     public void newDialog(View view) {
         ExpenseDialog dialog = new ExpenseDialog();
         dialog.show(getFragmentManager(), "example dialog");
 
+    }
+
+    //
+    @Override
+    public void applyTexts(String name, String amount){
+            myDb.insertCategory(name, amount);
+}
+
+    // basic method to switching activities
+    public void gotoAct1(View V) {
+        Intent intent = new Intent(this, NewExpense.class);
+        startActivity(intent);
     }
 
     private static boolean doesDatabaseExist(Context context, String dbName) {

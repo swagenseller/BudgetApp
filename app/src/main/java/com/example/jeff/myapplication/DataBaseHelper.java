@@ -1,5 +1,6 @@
 package com.example.jeff.myapplication;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
@@ -59,4 +60,18 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + CHARGES );
         onCreate(db);
     }
+
+    public boolean insertCategory(String name, String amount){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(CAT_COL2,name);
+        contentValues.put(CAT_COL3,amount);
+        long result = db.insert(CATEGORY,null,contentValues);
+        if(result == -1)
+            return false;
+        else
+            return true;
+    }
+
+
 }
