@@ -1,32 +1,29 @@
 package com.example.jeff.myapplication;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.content.DialogInterface;
+
+import android.database.Cursor;
+import android.database.SQLException;
 import android.os.Bundle;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.content.Context;
 import java.io.File;
-import android.util.Log;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteDatabase;
-
-import static com.example.jeff.myapplication.DataBaseHelper.DATABASE_NAME;
-
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import java.util.*;
 
 public class MainActivity extends AppCompatActivity implements ExpenseDialog.dialogListener {
     private String name_of_category;
     private String allocated_budget;
-    private boolean DBChecker;
+    private Button button;
     DataBaseHelper myDb;
 
     @Override
@@ -35,8 +32,9 @@ public class MainActivity extends AppCompatActivity implements ExpenseDialog.dia
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        myDb = new DataBaseHelper(this);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -44,11 +42,47 @@ public class MainActivity extends AppCompatActivity implements ExpenseDialog.dia
                         .setAction("Action", null).show();
             }
         });
+*/
+        ListView catList = findViewById(R.id.catList);
+        // Instanciating an array list (you don't need to do this,
+        // you already have yours).
+        String q = "SELECT Name || ' ' || Amount from category";
+        ArrayList<String> your_array_list = queryData(q,myDb);
 
-         myDb = new DataBaseHelper(this);
-         //DBChecker = doesDatabaseExist(this,  DATABASE_NAME);
-         //Log.v("Database exists: ", Boolean.toString(DBChecker));
+        // This is the array adapter, it takes the context of the activity as a
+        // first parameter, the type of list view as a second parameter and your
+        // array as a third parameter.
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_list_item_1,
+                your_array_list );
 
+        catList.setAdapter(arrayAdapter);
+
+        button = findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                newDialog();
+            }
+        });
+
+    }
+
+
+    public ArrayList<String> queryData(String query, DataBaseHelper myDb) {
+        ArrayList<String> arrlist = new ArrayList<>();
+        try {
+            Cursor c = myDb.getWritableDatabase().rawQuery(query,null);
+            for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+                arrlist.add(c.getString(0));
+            }
+            c.close();
+        }
+        catch (SQLException e){
+            Log.d("queryData", "cursor error");
+        }
+        return arrlist;
     }
 
     @Override
@@ -73,17 +107,17 @@ public class MainActivity extends AppCompatActivity implements ExpenseDialog.dia
         return super.onOptionsItemSelected(item);
     }
 
-    public void newDialog(View view) {
+    public void newDialog() {
         ExpenseDialog dialog = new ExpenseDialog();
-        dialog.show(getFragmentManager(), "example dialog");
+        dialog.show(getSupportFragmentManager(), "example dialog");
 
     }
 
     //
     @Override
-    public void applyTexts(String name, String amount){
+    public void applyTexts(String name, String amount) {
             myDb.insertCategory(name, amount);
-}
+    }
 
     // basic method to switching activities
     public void gotoAct1(View V) {
@@ -91,10 +125,7 @@ public class MainActivity extends AppCompatActivity implements ExpenseDialog.dia
         startActivity(intent);
     }
 
-    private static boolean doesDatabaseExist(Context context, String dbName) {
-        File dbFile = context.getDatabasePath(dbName);
-        return dbFile.exists();
-    }
+
 
 
 

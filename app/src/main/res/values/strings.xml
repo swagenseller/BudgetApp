@@ -4,4 +4,9 @@
     <string name="new_charge">New Charge</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
+    <string-array name="cats">
+        <item>Food</item>
+        <item>Gas</item>
+        <item>Rent</item>
+    </string-array>
 </resources>

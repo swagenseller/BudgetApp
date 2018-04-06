@@ -5,18 +5,20 @@ package com.example.jeff.myapplication;
  */
 
 import android.app.Dialog;
-import android.app.DialogFragment;
+import android.support.v7.app.AppCompatDialogFragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
 
 
-public class ExpenseDialog extends DialogFragment {
+
+public class ExpenseDialog extends AppCompatDialogFragment {
 
     private EditText editName;
     private EditText editAmount;
@@ -26,7 +28,6 @@ public class ExpenseDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.new_expense, null);
 
@@ -38,7 +39,10 @@ public class ExpenseDialog extends DialogFragment {
                         // user confirms dialog
                         String name = editName.getText().toString();
                         String amount = editAmount.getText().toString();
+                        Log.v("name equals", name);
+                        Log.v("amount equals", amount);
                         listener.applyTexts(name, amount);
+
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
