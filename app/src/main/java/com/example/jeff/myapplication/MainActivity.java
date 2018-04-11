@@ -33,8 +33,8 @@ public class MainActivity extends AppCompatActivity implements ExpenseDialog.dia
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
         myDb = new DataBaseHelper(this);
 
 
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements ExpenseDialog.dia
         button = findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                newDialog();  //have they typed new category yet?
+                newDialog(v);  //have they typed new category yet?
             }
         });
 
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements ExpenseDialog.dia
         return super.onOptionsItemSelected(item);
     }
 
-    public void newDialog() {
+    public void newDialog(View view) {
         ExpenseDialog dialog = new ExpenseDialog();
         dialog.show(getSupportFragmentManager(), "example dialog");
 
