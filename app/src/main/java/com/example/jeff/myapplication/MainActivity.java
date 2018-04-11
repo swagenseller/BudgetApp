@@ -5,16 +5,14 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.os.Bundle;
 import android.content.Intent;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.content.Context;
-import java.io.File;
+
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -24,6 +22,11 @@ public class MainActivity extends AppCompatActivity implements ExpenseDialog.dia
     private String name_of_category;
     private String allocated_budget;
     private Button button;
+    private ListView catList;
+    private ArrayList<String> arrList;
+    private String catQuery;
+    private ArrayAdapter<String> arrAdapter;
+    public Cursor c;
     DataBaseHelper myDb;
 
     @Override
@@ -34,56 +37,66 @@ public class MainActivity extends AppCompatActivity implements ExpenseDialog.dia
         setSupportActionBar(toolbar);
         myDb = new DataBaseHelper(this);
 
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+
+        catList = findViewById(R.id.catList);
+        catList.setClickable(true);
+
+        catQuery = "SELECT Name || ' ' || Amount from category";
+        arrList = queryData(catQuery,myDb);
+        arrAdapter = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_list_item_1,
+                arrList );
+
+        catList.setAdapter(arrAdapter);
+
+        catList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                startActivity(new Intent(view.getContext(), Category.class));
+            }
+        });
+
+       /* catList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+                                           int pos, long id) {
+
+                //grab id
+                myDb.removeItem("Category", "ID", "");
+                return true;
             }
         });
 */
-        ListView catList = findViewById(R.id.catList);
-        // Instanciating an array list (you don't need to do this,
-        // you already have yours).
-        String q = "SELECT Name || ' ' || Amount from category";
-        ArrayList<String> your_array_list = queryData(q,myDb);
-
-        // This is the array adapter, it takes the context of the activity as a
-        // first parameter, the type of list view as a second parameter and your
-        // array as a third parameter.
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                your_array_list );
-
-        catList.setAdapter(arrayAdapter);
-
         button = findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
-                newDialog();
+                newDialog();  //have they typed new category yet?
             }
         });
+
 
     }
 
 
+
     public ArrayList<String> queryData(String query, DataBaseHelper myDb) {
-        ArrayList<String> arrlist = new ArrayList<>();
+        ArrayList<String> a = new ArrayList<>();
         try {
-            Cursor c = myDb.getWritableDatabase().rawQuery(query,null);
+            c = myDb.getWritableDatabase().rawQuery(query,null);
             for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-                arrlist.add(c.getString(0));
+                a.add(c.getString(0));
             }
             c.close();
         }
         catch (SQLException e){
             Log.d("queryData", "cursor error");
         }
-        return arrlist;
+        return a;
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -116,12 +129,21 @@ public class MainActivity extends AppCompatActivity implements ExpenseDialog.dia
     //
     @Override
     public void applyTexts(String name, String amount) {
-            myDb.insertCategory(name, amount);
+        myDb.insertCategory(name, amount);
+        arrAdapter.notifyDataSetChanged();
+        arrList = queryData(catQuery,myDb);
+        arrAdapter = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_list_item_1,
+                arrList );
+        catList.setAdapter(arrAdapter);
+
+
     }
 
     // basic method to switching activities
     public void gotoAct1(View V) {
-        Intent intent = new Intent(this, NewExpense.class);
+        Intent intent = new Intent(this, Category.class);
         startActivity(intent);
     }
 

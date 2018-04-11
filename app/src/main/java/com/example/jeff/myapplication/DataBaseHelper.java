@@ -46,7 +46,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db){
-        db.execSQL("create table "  +CATEGORY+ " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, Amount INTEGER )");
+        db.execSQL("create table " +CATEGORY+ " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, Amount INTEGER )");
         db.execSQL("create table " +CHARGES+ " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Category_ID INTEGER, Name TEXT, Amount INTEGER, Date INTEGER )");
 
 
@@ -56,7 +56,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
 
-         db.execSQL("DROP TABLE IF EXISTS " + CATEGORY );
+        db.execSQL("DROP TABLE IF EXISTS " + CATEGORY );
         db.execSQL("DROP TABLE IF EXISTS " + CHARGES );
         onCreate(db);
     }
@@ -71,6 +71,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             return false;
         else
             return true;
+    }
+
+    public void removeItem(String tableName, String colName, String value){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " +tableName+ " WHERE " +colName+ "='" +value+ "'");
+
     }
 
 
