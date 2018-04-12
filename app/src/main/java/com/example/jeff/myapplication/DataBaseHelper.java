@@ -2,6 +2,7 @@ package com.example.jeff.myapplication;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -46,8 +47,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db){
-        db.execSQL("create table " +CATEGORY+ " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, Amount INTEGER )");
-        db.execSQL("create table " +CHARGES+ " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Category_ID INTEGER, Name TEXT, Amount INTEGER, Date INTEGER )");
+        db.execSQL("create table " +CATEGORY+ " (_id INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, Amount INTEGER )");
+        db.execSQL("create table " +CHARGES+ " (_id INTEGER PRIMARY KEY AUTOINCREMENT, Category_ID INTEGER, Name TEXT, Amount INTEGER, Date INTEGER )");
 
 
 
@@ -78,6 +79,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM " +tableName+ " WHERE " +colName+ "='" +value+ "'");
 
     }
+
 
 
 }
