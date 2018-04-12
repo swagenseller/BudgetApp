@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements ExpenseDialog.dia
 
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+
                 startActivity(new Intent(view.getContext(), Category.class));
             }
         });
