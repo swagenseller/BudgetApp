@@ -9,4 +9,8 @@
         <item>Gas</item>
         <item>Rent</item>
     </string-array>
+
+    <string name="button1">Add Charge</string>
+    <string name="status">$3.50</string>
+
 </resources>
