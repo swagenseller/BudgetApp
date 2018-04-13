@@ -33,9 +33,15 @@ public class MyCursorAdapter extends CursorAdapter {
         // Extract properties from cursor
         String name = cursor.getString(cursor.getColumnIndexOrThrow("Name"));
         String amount = cursor.getString(cursor.getColumnIndexOrThrow("Amount"));
+
         // Populate fields with extracted properties
         itemName.setText(name);
         itemAmount.setText(amount);
     }
+    public int getId(Cursor cursor) {
+        final int itemId = cursor.getInt(cursor.getColumnIndex("_id"));
+        return itemId;
+    }
+
 
 }

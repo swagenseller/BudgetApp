@@ -23,13 +23,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     //Table Columns--------------------------------
 
             //category columns
-    public static final String CAT_COL1 = "ID";
+    public static final String CAT_COL1 = "_id";
     public static final String CAT_COL2 = "Name";
     public static final String CAT_COL3 = "Amount";
 
             //category data columns
 
-    public static final String CHA_COL1 = "ID";
+    public static final String CHA_COL1 = "_id";
     public static final String CHA_COL2 = "Category_ID";
     public static final String CHA_COL3 = "Name";
     public static final String CHA_COL4 = "Amount";
@@ -74,9 +74,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             return true;
     }
 
-    public void removeItem(String tableName, String colName, String value){
+    public void removeItem(String tableName, int id){
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DELETE FROM " +tableName+ " WHERE " +colName+ "='" +value+ "'");
+        db.execSQL("DELETE FROM " +tableName+ " WHERE " +CAT_COL1+ "='" +id+"'");
 
     }
 

@@ -14,17 +14,22 @@ import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.util.*;
 
 public class MainActivity extends AppCompatActivity implements ExpenseDialog.dialogListener {
-    public Button button;
+    Button button;
     private ListView catList;
     private Cursor cursor;
-    private Cursor newCursor;
     DataBaseHelper myDb;
     SQLiteDatabase db;
+    MyCursorAdapter listAd;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,40 +43,36 @@ public class MainActivity extends AppCompatActivity implements ExpenseDialog.dia
             db = myDb.getReadableDatabase();
             cursor = db.query("CATEGORY", new String[]{"_id", "Name", "Amount"},
                     null, null, null, null, null);
+            listAd = new MyCursorAdapter(this, cursor);
 
-            CursorAdapter listAdapter  = new SimpleCursorAdapter(this,
-                    android.R.layout.simple_list_item_1,
-                    cursor,
-                    new String[]{"Name"},
-                    new int[]{android.R.id.text1},
-                    0
-                    );
-            catList.setAdapter(listAdapter);
+            catList.setAdapter(listAd);
         } catch(SQLException e) {
             Toast toast = Toast.makeText(this, "Database unavailable",
                     Toast.LENGTH_SHORT);
             toast.show();
         }
         catList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-
                 startActivity(new Intent(view.getContext(), Category.class));
             }
         });
 
-       /* catList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+       catList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-                                           int pos, long id) {
-
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
                 //grab id
-                myDb.removeItem("Category", "ID", "");
+                TextView tempName = findViewById(R.id.rowName);
+                TextView tempAmount = findViewById(R.id.rowAmount);
+                String rmName = tempName.getText().toString();
+                String rmAmount = tempAmount.getText().toString();
+                int tempId = listAd.getId(cursor);
+                Log.d("testing deletion", Integer.toString(tempId));
+                myDb.removeItem("Category", tempId);
+                updateCursor();
                 return true;
             }
         });
-*/
+
         button = findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -91,7 +92,6 @@ public class MainActivity extends AppCompatActivity implements ExpenseDialog.dia
     public void onDestroy() {
         super.onDestroy();
         cursor.close();
-        newCursor.close();
     }
 
 
@@ -105,19 +105,16 @@ public class MainActivity extends AppCompatActivity implements ExpenseDialog.dia
     @Override
     public void applyTexts(String name, String amount) {
         myDb.insertCategory(name, amount);
+        updateCursor();
+
+    }
+    public void updateCursor(){
         DataBaseHelper sqlHelper = new DataBaseHelper(this);
         SQLiteDatabase db = sqlHelper.getReadableDatabase();
-        newCursor = db.query("CATEGORY", new String[]{"_id", "Name", "Amount"},
+        cursor = db.query("CATEGORY", new String[]{"_id", "Name", "Amount"},
                 null, null, null, null, null);
-        CursorAdapter newList =  new SimpleCursorAdapter(this,
-                android.R.layout.simple_list_item_1,
-                newCursor,
-                new String[]{"Name"},
-                new int[]{android.R.id.text1},
-                0
-        );
-        catList.setAdapter(newList);
-
+        MyCursorAdapter listAd = new MyCursorAdapter(this, cursor);
+        catList.setAdapter(listAd);
     }
 
     // basic method to switching activities
