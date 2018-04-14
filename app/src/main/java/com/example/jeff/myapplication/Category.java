@@ -29,13 +29,13 @@ public class Category extends AppCompatActivity implements ChargeDialog.dialogLi
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1,
                 items);
-        listView1.setAdapter(adapter);
-        button = findViewById(R.id.addchargebutton);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                newDialog(v);  //have they typed new category yet?
-            }
-        });
+        //listView1.setAdapter(adapter);
+        //button = findViewById(R.id.addchargebutton);
+        //button.setOnClickListener(new View.OnClickListener() {
+        //    public void onClick(View v) {
+        //        newDialog(v);  //have they typed new category yet?
+         //   }
+        //});
 
 
 
